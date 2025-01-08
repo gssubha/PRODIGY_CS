@@ -1,0 +1,26 @@
+from scapy.all import sniff, IP, TCP, UDP
+
+# Function to process captured packets
+def packet_callback(packet):
+    if IP in packet:
+        ip_layer = packet[IP]
+        protocol = "Unknown"
+        
+        # Check for TCP or UDP
+        if TCP in packet:
+            protocol = "TCP"
+        elif UDP in packet:
+            protocol = "UDP"
+        
+        # Display packet details
+        print(f"\n[+] Packet Captured:")
+        print(f"Source IP: {ip_layer.src}")
+        print(f"Destination IP: {ip_layer.dst}")
+        print(f"Protocol: {protocol}")
+        
+        # Display packet payload (hex format for readability)
+        print(f"Payload: {bytes(packet.payload).hex()}")
+
+# Start sniffing packets on the default network interface
+print("Starting Network Packet Analyzer... Press Ctrl+C to stop.")
+sniff(prn=packet_callback, store=False)
